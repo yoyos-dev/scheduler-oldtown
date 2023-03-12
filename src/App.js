@@ -1,8 +1,21 @@
+import UserForm from "./UserForm"
+
 function App() {
+  const user = {
+    trainer: "any",
+  };
+
+  const handleSave = (values) => {
+    console.log({ values });
+  };
+
   return (
-    <p>
-      Test
-    </p>
+    <div className="App">
+      <h1>Personal Training Scheduler</h1>
+      <div className="form">
+        <UserForm onSave={handleSave} {...{ user } } />
+      </div>
+    </div>
   );
 }
 
