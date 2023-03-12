@@ -2,6 +2,10 @@ import UserForm from "./UserForm"
 
 function App() {
   const user = {
+    name: "",
+    email: "",
+    phone: "",
+    id: "",
     trainer: "any",
   };
 
