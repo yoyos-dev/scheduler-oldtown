@@ -6,7 +6,7 @@ function App() {
     email: "",
     phone: "",
     id: "",
-    trainer: "any",
+    trainer: "Any",
   };
 
   const handleSave = (values) => {

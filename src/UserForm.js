@@ -1,15 +1,18 @@
 import { useState } from "react";
 import validator from "validator";
 import Select from "react-select";
-
-const trainerOptions = [
-    { value: "any", label: "Any" },
-    { value: "trainerOne", label: "Trainer 1" },
-    { value: "trainerTwo", label: "Trainer 2" },
-    { value: "trainerThree", label: "Trainer 3" },
-];
+import GetTrainers from "./GetTrainers";
 
 const UserForm = ({ onSave, user= {} }) => {
+    const trainerOptions = [
+        { value: "Any", label: "Any" },
+    ];
+
+    var trainers = GetTrainers();
+    for (var i = 0; i < trainers.length; i++) {
+        trainerOptions.push( { value: trainers[i], label: trainers[i]} )
+    };
+
     const [userData, setUserData] = useState(user);
     const [errors, setErrors] = useState({});
 
