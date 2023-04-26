@@ -29,7 +29,7 @@ const UserForm = ({ onSave, user= {} }) => {
 
     const { field: select } = useController( { name: "trainer", control });
     const { field: selectDate } = useController({ name: 'date', control, defaultValue: date.toDateString()});
-    const { field: phone } = useController({ name: 'phone', control });
+    const { field: phone } = useController({ name: 'phone', control, defaultValue: ""});
 
     var trainers = GetTrainers();
     for (var i = 0; i < trainers.length; i++) {
@@ -63,19 +63,19 @@ const UserForm = ({ onSave, user= {} }) => {
     };
 
     const handlePhoneChange = (phoneNumber) => {
-        var number = phoneNumber.target.value.trim().replace(/[^0-9]/g, "");
+        phoneNumber.target.value = phoneNumber.target.value.trim().replace(/[^0-9]/g, "");
 
-        if (number.length < 7){
-            number = phoneNumber.target.value.replace(/(\d{3})(\d{1})/, "$1-$2");
+        if (phoneNumber.target.value.length < 7){
+            phoneNumber.target.value = phoneNumber.target.value.replace(/(\d{3})(\d{1})/, "$1-$2");
         }
-        if (number.length < 11){
-            number = phoneNumber.target.value.replace(/(\d{3})(\d{3})(\d{1})/, "$1-$2-$3");
+        if (phoneNumber.target.value.length < 11){
+            phoneNumber.target.value = phoneNumber.target.value.replace(/(\d{3})(\d{3})(\d{1})/, "$1-$2-$3");
         } 
         else{
-            number = phoneNumber.target.value.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+            phoneNumber.target.value = phoneNumber.target.value.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
         }
 
-        phone.onChange(number);
+        phone.onChange(phoneNumber.target.value);
       };
 
     const handleSave = (formValues) => {
