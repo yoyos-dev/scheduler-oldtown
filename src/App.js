@@ -6,7 +6,7 @@ function App() {
   };
 
   const handleSave = (values) => {
-    const message = { to: values.trainer, body: values.name + " wants to do a training session with you at 1:00 PM on " + values.date + ".\nPhone Number: " + values.phone + "\nMember ID: " + values.id }
+    const message = { to: values.trainer, body: values.name + " wants to do a training session with you at " + values.time + " on " + values.date + ".\nPhone Number: " + values.phone + "\nMember ID: " + values.id }
     console.log({ values });
     fetch('/api/messages', {
       method: 'POST',

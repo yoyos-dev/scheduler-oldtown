@@ -4,7 +4,9 @@ import Select from "react-select";
 import Calendar from 'react-calendar'; 
 import GetTrainers from "./GetTrainers";
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';  
+import * as yup from 'yup';
+import AvailableTimes from "./AvailableTimes";
+import ButtonGroup from "./ButtonGroup";
 
 const schema = yup.object({
     name: yup.string().required(),
@@ -12,6 +14,7 @@ const schema = yup.object({
     id: yup.string().optional(),
     trainer: yup.string().required(),
     date: yup.string().required(),
+    time: yup.string().required()
 });
 
 const UserForm = ({ onSave, user= {} }) => {
@@ -25,11 +28,13 @@ const UserForm = ({ onSave, user= {} }) => {
 
     const { errors } = formState
 
-    const [date] = useState(new Date())
+    const [date, setDate] = useState(new Date())
 
     const { field: select } = useController( { name: "trainer", control });
-    const { field: selectDate } = useController({ name: 'date', control, defaultValue: date.toDateString()});
-    const { field: phone } = useController({ name: 'phone', control, defaultValue: ""});
+    const { field: selectDate } = useController({ name: 'date', control, defaultValue: date.toDateString() });
+    const { field: selectLabel } = useController({ name: 'trainerLabel', control, defaultValue: "Any" });
+    const { field: selectTime } = useController({ name: 'time', control, defaultValue: [] });
+    const { field: phone } = useController({ name: 'phone', control, defaultValue: "" });
 
     var trainers = GetTrainers();
     for (var i = 0; i < trainers.length; i++) {
@@ -56,10 +61,12 @@ const UserForm = ({ onSave, user= {} }) => {
 
     const handleSelectChange = (option) => {
         select.onChange(option.value);
+        selectLabel.onChange(option.label)
     };
 
-    const handleDateChange = (date) => {
-        selectDate.onChange(date.toDateString())
+    const handleDateChange = (dateChange) => {
+        setDate(dateChange)
+        selectDate.onChange(dateChange.toDateString())
     };
 
     const handlePhoneChange = (phoneNumber) => {
@@ -77,6 +84,12 @@ const UserForm = ({ onSave, user= {} }) => {
 
         phone.onChange(phoneNumber.target.value);
       };
+
+    const handleTimeChange = (time) => {
+        selectTime.onChange(time)
+    }
+    
+    var times = AvailableTimes(String((date.getMonth() + 1)+ "-" + date.getDate() + "-" + date.getFullYear()), selectLabel.value)
 
     const handleSave = (formValues) => {
         onSave(formValues);
@@ -120,10 +133,17 @@ const UserForm = ({ onSave, user= {} }) => {
                     onChange = {handleDateChange}
                 />
             </div>
-            {/* <div className="text-center">
-                    Selected date: {date.toDateString}
-            </div> */}
 
+            <div className="text-center">
+                    Selected date: {date.toDateString()}
+            </div>
+
+            <div>
+                <ButtonGroup
+                    buttons = {times}
+                    onClick = {handleTimeChange}
+                />
+            </div>
 
             <div>
                 <button type="submit">Save</button>
