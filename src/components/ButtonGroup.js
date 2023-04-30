@@ -14,7 +14,7 @@ const ButtonGroup = ({ onClick, buttons }) => {
         <button
           key={i}
           name={buttonLabel}
-          type="input"
+          type="button"
           onClick={(event) => handleClick(i, buttonLabel)}
           className={i === clickedId ? "customButton active" : "customButton"}
         >

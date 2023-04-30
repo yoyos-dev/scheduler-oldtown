@@ -129,19 +129,19 @@ const UserForm = ({ onSave, user= {} }) => {
             
             <div className="calendar-container">
                 <Calendar 
-                    value = {date}
-                    onChange = {handleDateChange}
+                    value={date}
+                    onChange={handleDateChange}
                 />
             </div>
 
-            <div className="text-center">
+            <div className = "text-center">
                     Selected date: {date.toDateString()}
             </div>
 
             <div>
                 <ButtonGroup
-                    buttons = {times}
-                    onClick = {handleTimeChange}
+                    buttons={times}
+                    onClick={handleTimeChange}
                 />
             </div>
 
