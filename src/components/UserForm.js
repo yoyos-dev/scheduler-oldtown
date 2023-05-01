@@ -62,11 +62,13 @@ const UserForm = ({ onSave, user= {} }) => {
     const handleSelectChange = (option) => {
         select.onChange(option.value);
         selectLabel.onChange(option.label)
+        selectTime.onChange([])
     };
 
     const handleDateChange = (dateChange) => {
         setDate(dateChange)
         selectDate.onChange(dateChange.toDateString())
+        selectTime.onChange([])
     };
 
     const handlePhoneChange = (phoneNumber) => {
