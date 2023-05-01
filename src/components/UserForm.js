@@ -98,15 +98,13 @@ const UserForm = ({ onSave, user= {} }) => {
     const handleSave = (formValues) => {
         if(formValues.trainerLabel === "Any"){
             var trainer = MultipleTimes(formValues.time, timeSet[1])
-            if(trainer !== undefined){
-                fetch('trainers.json').then(response => response.json()).then((json) => {
-                    for (var i = 0; i < json.length; i++) {
-                        if(json[i].name === trainer){
-                            formValues.trainer = json[i].number
-                        }
+            fetch('trainers.json').then(response => response.json()).then((json) => {
+                for (var i = 0; i < json.length; i++) {
+                    if(json[i].name === trainer){
+                        formValues.trainer = json[i].number
                     }
-                });
-            }
+                }
+            });
         }
         onSave(formValues);
     };
