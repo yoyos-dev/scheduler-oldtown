@@ -9,13 +9,15 @@ import AvailableTimes from "./AvailableTimes";
 import ButtonGroup from "./ButtonGroup";
 import MultipleTimes from "./MultipleTimes";
 
+const phoneRegExp = /(\d{3})-(\d{3})-(\d{4})/
+
 const schema = yup.object({
-    name: yup.string().required(),
-    phone: yup.string(),
+    name: yup.string().required("Please Input Name"),
+    phone: yup.string().required("Please Input A Valid Phone Number").matches(phoneRegExp, "Please Input A Valid Phone Number"),
     id: yup.string().optional(),
     trainer: yup.string().required(),
     date: yup.string().required(),
-    time: yup.string().required()
+    time: yup.string().required("Please Select A Time")
 });
 
 const UserForm = ({ onSave, user= {} }) => {
@@ -34,7 +36,7 @@ const UserForm = ({ onSave, user= {} }) => {
     const { field: select } = useController( { name: "trainer", control });
     const { field: selectDate } = useController({ name: 'date', control, defaultValue: date.toDateString() });
     const { field: selectLabel } = useController({ name: 'trainerLabel', control, defaultValue: "Any" });
-    const { field: selectTime } = useController({ name: 'time', control, defaultValue: [] });
+    const { field: selectTime } = useController({ name: 'time', control, defaultValue: "" });
     const { field: phone } = useController({ name: 'phone', control, defaultValue: "" });
 
     var trainers = GetTrainers();
@@ -42,34 +44,16 @@ const UserForm = ({ onSave, user= {} }) => {
         trainerOptions.push( { value: trainers[i][1], label: trainers[i][0]} )
     };
 
-    // const validateData = () => {
-    //     let errors = {};
-
-    //     if (!name) {
-    //         errors.name = "Name is required";
-    //     }
-
-    //     if (!validator.isEmail(email)) {
-    //         errors.email = "A valid email is required";
-    //     }
-
-    //     if (!validator.isMobilePhone(phone)) {
-    //         errors.phone = "A valid phone number is required";
-    //     }
-
-    //     return errors;
-    // };
-
     const handleSelectChange = (option) => {
         select.onChange(option.value);
         selectLabel.onChange(option.label)
-        selectTime.onChange([])
+        selectTime.onChange("")
     };
 
     const handleDateChange = (dateChange) => {
         setDate(dateChange)
         selectDate.onChange(dateChange.toDateString())
-        selectTime.onChange([])
+        selectTime.onChange("")
     };
 
     const handlePhoneChange = (phoneNumber) => {
@@ -114,7 +98,7 @@ const UserForm = ({ onSave, user= {} }) => {
             <div>
                 <p>Name*</p>
                 <input {...register("name")} placeholder="Name" />
-                <div style={{ color: "red" }}>{errors.name?.meesage}</div>
+                <div style={{ color: "red" }}>{errors.name?.message}</div>
             </div>
 
             <div>
@@ -157,6 +141,7 @@ const UserForm = ({ onSave, user= {} }) => {
                     buttons={times}
                     onClick={handleTimeChange}
                 />
+                <div style={{ color: "red" }}>{errors.time?.message}</div>
             </div>
 
             <div>

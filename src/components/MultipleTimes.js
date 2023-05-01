@@ -9,7 +9,7 @@ function MultipleTimes(time, trainers) {
         }
     }
     if ( count >= 2 ){
-        var item = trainerList[Math.floor(Math.random()*trainerList.length)];
+        var item = trainerList[~~(Math.random() * trainerList.length)];
     }
     else{
         var item = trainerList[0]
