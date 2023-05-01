@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 
 function AvailableTimes(date, trainer) {
   const [items, setItems] = useState([])
+  const [itemsT, setItemsT] = useState([])
 
   useEffect(() => {
     fetch("time-sheets/" + date + '-AM-Shift.json').then(response => response.json())
       .then((json) => {
         var times = []
+        var trainers = []
         if(trainer === "Any"){
           for (var j = 0; j < json.length; j++) {
             for( const element of Object.keys(json[j]) ){
@@ -14,6 +16,7 @@ function AvailableTimes(date, trainer) {
                 if(!(times.includes(element))){
                   times.push(element)
                 }
+                trainers.push([json[j].name, element])
               }
             }
           }
@@ -39,14 +42,17 @@ function AvailableTimes(date, trainer) {
           return x - y
         });
         setItems(times)
+        setItemsT(trainers)
       })
       .catch(() => {
         setItems([])
+        setItemsT([])
       });
 
     fetch("time-sheets/" + date + '-PM-Shift.json').then(response => response.json())
       .then((json) => {
         var times = []
+        var trainers = []
         if(trainer === "Any"){
           for (var j = 0; j < json.length; j++) {
             for( const element of Object.keys(json[j]) ){
@@ -54,6 +60,7 @@ function AvailableTimes(date, trainer) {
                 if(!(times.includes(element))){
                   times.push(element)
                 }
+                trainers.push([json[j].name, element])
               }
             }
           }
@@ -79,15 +86,17 @@ function AvailableTimes(date, trainer) {
           return x - y
         });
         setItems(current => [...current, ...times])
+        setItemsT(current => [...current, ...trainers])
       })
       .catch(() => {
         setItems([])
+        setItemsT([])
       });
 
   }, [date, trainer]);
 
   return  (
-    items
+    [items, itemsT]
   );
 };
 

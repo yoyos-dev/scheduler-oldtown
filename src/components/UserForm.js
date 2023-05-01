@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import AvailableTimes from "./AvailableTimes";
 import ButtonGroup from "./ButtonGroup";
+import MultipleTimes from "./MultipleTimes";
 
 const schema = yup.object({
     name: yup.string().required(),
@@ -91,9 +92,22 @@ const UserForm = ({ onSave, user= {} }) => {
         selectTime.onChange(time)
     }
     
-    var times = AvailableTimes(String((date.getMonth() + 1)+ "-" + date.getDate() + "-" + date.getFullYear()), selectLabel.value)
+    var timeSet = AvailableTimes(String((date.getMonth() + 1)+ "-" + date.getDate() + "-" + date.getFullYear()), selectLabel.value)
+    var times = timeSet[0]
 
     const handleSave = (formValues) => {
+        if(formValues.trainerLabel === "Any"){
+            var trainer = MultipleTimes(formValues.time, timeSet[1])
+            if(trainer !== undefined){
+                fetch('trainers.json').then(response => response.json()).then((json) => {
+                    for (var i = 0; i < json.length; i++) {
+                        if(json[i].name === trainer){
+                            formValues.trainer = json[i].number
+                        }
+                    }
+                });
+            }
+        }
         onSave(formValues);
     };
 
