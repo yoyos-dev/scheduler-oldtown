@@ -11,6 +11,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(pino);
 
+app.post('/api/verify', (req, res) => {
+  res.header('Content-Type', 'application/json');
+  client.verify.v2.services(process.env.TWILIO_VERIFY_SID).verifications
+    .create({
+      to: req.body.to, 
+      channel: 'sms'
+    })
+    .then(() => {
+      res.send(JSON.stringify({ success: true }));
+    })
+    .catch(err => {
+      console.log(err);
+      res.send(JSON.stringify({ success: false }));
+    });
+});
+
 app.post('/api/messages', (req, res) => {
     res.header('Content-Type', 'application/json');
     client.messages
