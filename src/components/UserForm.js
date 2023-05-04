@@ -129,6 +129,8 @@ const UserForm = ({ onSave, user= {} }) => {
                 <Calendar 
                     value={date}
                     onChange={handleDateChange}
+                    minDate={new Date()}
+                    calendarType={"US"}
                 />
             </div>
 
