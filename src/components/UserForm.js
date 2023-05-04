@@ -86,11 +86,16 @@ const UserForm = ({ onSave, user= {} }) => {
                 for (var i = 0; i < json.length; i++) {
                     if(json[i].name === trainer){
                         formValues.trainer = json[i].number
+                        formValues.trainerLabel = json[i].name
+                        onSave(formValues);
+                        formValues.trainerLabel = "Any"
                     }
                 }
             });
         }
-        onSave(formValues);
+        else{
+            onSave(formValues);
+        }
     };
 
     return (

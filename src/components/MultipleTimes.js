@@ -1,7 +1,7 @@
 function MultipleTimes(time, trainers) {
     var count = 0
     var trainerList = []
-    console.log(trainers)
+    var item
     for ( const element of trainers ){
         if ( time === element[1] ){
             trainerList.push(element[0])
@@ -9,10 +9,10 @@ function MultipleTimes(time, trainers) {
         }
     }
     if ( count >= 2 ){
-        var item = trainerList[~~(Math.random() * trainerList.length)];
+        item = trainerList[~~(Math.random() * trainerList.length)];
     }
     else{
-        var item = trainerList[0]
+        item = trainerList[0]
     }
 
     return (

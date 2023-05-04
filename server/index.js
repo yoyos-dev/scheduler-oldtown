@@ -27,6 +27,22 @@ app.post('/api/verify', (req, res) => {
     });
 });
 
+app.post('/api/verify-confirm', (req, res) => {
+  res.header('Content-Type', 'application/json');
+  client.verify.v2.services(process.env.TWILIO_VERIFY_SID).verificationChecks
+    .create({
+      to: req.body.to, 
+      code: req.body.code
+    })
+    .then(() => {
+      res.send(JSON.stringify({ success: true }));
+    })
+    .catch(err => {
+      console.log(err);
+      res.send(JSON.stringify({ success: false }));
+    });
+});
+
 app.post('/api/messages', (req, res) => {
     res.header('Content-Type', 'application/json');
     client.messages
