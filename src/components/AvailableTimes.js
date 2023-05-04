@@ -9,10 +9,12 @@ function AvailableTimes(date, trainer) {
       .then((json) => {
         var times = []
         var trainers = []
+        var selDate = date.split('-')
+        selDate = selDate.join('/')
         if(trainer === "Any"){
           for (var j = 0; j < json.length; j++) {
             for( const element of Object.keys(json[j]) ){
-              if(json[j][element] === "Available"){
+              if(json[j][element] === "Available" && new Date() < new Date(selDate + " " + element)){
                 if(!(times.includes(element))){
                   times.push(element)
                 }
@@ -29,7 +31,7 @@ function AvailableTimes(date, trainer) {
           for (var i = 0; i < json.length; i++) {
             if(trainer === json[i].name){
               for( const element of Object.keys(json[i]) ){
-                if(json[i][element] === "Available"){
+                if(json[i][element] === "Available" && new Date() < new Date(selDate + " " + element)){
                   times.push(element)
                 }
               }
