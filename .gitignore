@@ -24,3 +24,4 @@ yarn-error.log*
 public/trainers.json
 .env
 public/time-sheets
+public/schedu bot.py
