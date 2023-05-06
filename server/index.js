@@ -34,12 +34,12 @@ app.post('/api/verify-confirm', (req, res) => {
       to: req.body.to, 
       code: req.body.code
     })
-    .then(() => {
-      res.send(JSON.stringify({ success: true }));
+    .then((verification_check) => {
+      res.send(JSON.stringify({ status: verification_check.status }))
     })
-    .catch(err => {
-      console.log(err);
-      res.send(JSON.stringify({ success: false }));
+    .catch(verification_check => {
+      console.log(verification_check);
+      res.send(JSON.stringify({ status: verification_check.status }));
     });
 });
 

@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import AvailableTimes from "./AvailableTimes";
 import ButtonGroup from "./ButtonGroup";
 import MultipleTimes from "./MultipleTimes";
+import Popup from 'reactjs-popup';
 
 const phoneRegExp = /(\d{3})-(\d{3})-(\d{4})/
 
@@ -20,7 +21,13 @@ const schema = yup.object({
     time: yup.string().required("Please Select A Time")
 });
 
-const UserForm = ({ onSave, user= {} }) => {
+const codeSchema = yup.object({
+    code: yup.string().required("Please Input Valid Verification Code")
+    .min(6, "Please Input Valid Verification Code")
+    .max(6, "Please Input Valid Verification Code")
+});
+
+const UserForm = ({ user= {} }) => {
     const trainerOptions = [
         { value: "Any", label: "Any" },
     ];
@@ -29,9 +36,14 @@ const UserForm = ({ onSave, user= {} }) => {
         defaultValues: user, 
         resolver: yupResolver(schema) });
 
+    const { register: registerC, setError: setErrorC, handleSubmit: handleSubmitC, formState: formStateC } = useForm( {
+        resolver: yupResolver(codeSchema) });
+
     const { errors } = formState
+    const { errors: errorsC } = formStateC
 
     const [date, setDate] = useState(new Date())
+    const [formValues, setValues] = useState([])
 
     const { field: select } = useController( { name: "trainer", control });
     const { field: selectDate } = useController({ name: 'date', control, defaultValue: date.toDateString() });
@@ -43,6 +55,11 @@ const UserForm = ({ onSave, user= {} }) => {
     for (var i = 0; i < trainers.length; i++) {
         trainerOptions.push( { value: trainers[i][1], label: trainers[i][0]} )
     };
+
+    const [popUp, setPopUp] = useState(false)
+    const [receipt, setReceipt] = useState(false)
+    const [verPhone, setVerPhone] = useState()
+
 
     const handleSelectChange = (option) => {
         select.onChange(option.value);
@@ -72,8 +89,21 @@ const UserForm = ({ onSave, user= {} }) => {
         phone.onChange(phoneNumber.target.value);
       };
 
+    const handleIdChange = (id) => {
+        id.target.value = id.target.value.trim().replace(/[^0-9]/g, "");
+
+        if (id.target.value.length >= 1){
+            id.target.value = id.target.value.replace(/(\d{1})/, "x$1");
+        }
+
+    }
+
     const handleTimeChange = (time) => {
         selectTime.onChange(time)
+    }
+
+    const handleCodeChange = (code) => {
+        code.target.value = code.target.value.trim().replace(/[^0-9]/g, "");
     }
     
     var timeSet = AvailableTimes(String((date.getMonth() + 1)+ "-" + date.getDate() + "-" + date.getFullYear()), selectLabel.value)
@@ -87,18 +117,76 @@ const UserForm = ({ onSave, user= {} }) => {
                     if(json[i].name === trainer){
                         formValues.trainer = json[i].number
                         formValues.trainerLabel = json[i].name
-                        onSave(formValues);
+                        setValues(formValues);
+                        setPopUp(true)
+                        sendVerify(formValues)
                         formValues.trainerLabel = "Any"
                     }
                 }
             });
         }
         else{
-            onSave(formValues);
+            setValues(formValues);
+            sendVerify(formValues)
+            setPopUp(true)
         }
     };
 
+    const onReceiptClose = () => {
+        window.location.reload()
+    }
+
+    const onPopupClose = () => {
+        setPopUp(false)
+    }
+
+    const sendVerify = (values) => {
+        var verPhone = values.phone.split("-")
+        verPhone = verPhone.join("")
+        verPhone = "+1" + verPhone
+        setVerPhone(verPhone)
+        const verify = { to: verPhone }
+
+        fetch('/api/verify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify( verify )
+        });
+    }
+
+    const handleCodeValid = (code) => {
+        const confirm = { to: verPhone, code: code.code }
+
+        fetch('/api/verify-confirm', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify( confirm )
+          })    
+          .then(response => response.json()).then((json) => {
+            if(json.status === 'approved'){
+                setPopUp(false)
+                setReceipt(true)
+            const message = { to: formValues.trainer, body: formValues.name + " wants to do a training session with you at " + formValues.time + " on " + formValues.date + ".\nPhone Number: " + formValues.phone + "\nMember ID: " + formValues.id }
+            fetch('/api/messages', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify( message )
+            });
+            }
+            else{
+                setErrorC("code", { message: 'Code Entered Is Invalid' });
+            }
+          })
+    }
+
     return (
+        <>
         <form onSubmit={handleSubmit(handleSave)}>
             <div>
                 <p>Name*</p>
@@ -114,7 +202,7 @@ const UserForm = ({ onSave, user= {} }) => {
 
             <div>
                 <p>Member ID (Optional)</p>
-                <input {...register("id")} placeholder="x######" />
+                <input {...register("id")} placeholder="x#######" onChange={handleIdChange} maxLength={8}/>
             </div>
 
             <div>
@@ -155,6 +243,55 @@ const UserForm = ({ onSave, user= {} }) => {
                 <button type="submit">Save</button>
             </div>
         </form>
+
+        <Popup open={popUp} modal onClose={onPopupClose}>
+            <div
+                style={{
+                    backgroundColor: 'white',
+                }}>
+                <h2>Confirm Booking:</h2>
+
+                <p>A verification code has been sent to your phone.</p>
+                <p>Please enter code and hit confirm to finalize booking:</p>
+
+                <form onSubmit={handleSubmitC(handleCodeValid)}>
+                    <input {...registerC("code")} maxLength={6} placeholder="######" onChange={handleCodeChange} ></input>
+                    <div style={{ color: "red" }}>{errorsC.code?.message}</div>
+                    <button type="submit">Confirm</button>
+                </form>
+
+                <h3>Please confirm booking information:</h3>
+                <p> Name: {formValues.name}</p>
+                <p> Phone Number: {formValues.phone}</p>
+                <p> Member ID:  {formValues.id}</p>
+                <p> Booking Date: {formValues.date}</p>
+                <p> Trainer: {formValues.trainerLabel}</p>
+            </div>
+        </Popup>
+
+        <Popup open={receipt} modal closeOnDocumentClick={false} onClose={onReceiptClose}>
+            <div
+                style={{
+                    backgroundColor: 'white',
+                }}>
+                <h2>Booking Confirmed!</h2>
+
+                <p>Thank you {formValues.name}!</p>
+                <p>Your training session with {formValues.trainerLabel} has been confirmed</p>
+                <p>for {formValues.date} at {formValues.time}.</p>
+
+                <h3>Booking Receipt:</h3>
+
+                <p> Name: {formValues.name}</p>
+                <p> Phone Number: {formValues.phone}</p>
+                <p> Member ID:  {formValues.id}</p>
+                <p> Booking Date: {formValues.date} at {formValues.time}</p>
+                <p> Trainer: {formValues.trainerLabel}</p>
+
+                <button className="button" onClick={onReceiptClose} >close</button>
+            </div>
+        </Popup>
+        </>
     );
 };
 
