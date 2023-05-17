@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'Proxima-Nova-Reg';
+    src: url('./fonts/ProximaNova/Proxima Nova Reg.otf');
+}
+
+@font-face {
+    font-family: 'Proxima-Nova-Reg-It';
+    src: url('./fonts/ProximaNova/Proxima Nova Reg It.otf');
+}
+
+@font-face {
+    font-family: 'Proxima-Nova-Alt-Cond-Black';
+    src: url('./fonts/ProximaNova/Proxima Nova Alt Cond Black.otf');
+}
+
+@layer components {
+    .input-primary {
+        @apply outline-none box-border p-4 border-2 border-neutral-400 bg-transparent rounded-lg text-2xl font-Proxima-Nova-Reg tracking-wider text-white focus:border-white placeholder:font-Proxima-Nova-Reg-It;
+    }
+}
+
+@layer components {
+    .input-text {
+        @apply text-2xl font-Proxima-Nova-Reg tracking-wider text-white;
+    }
+}
+
+@layer components {
+    .input-error {
+        @apply text-2xl font-Proxima-Nova-Reg tracking-wider text-red-500;
+    }
+}
+
+@layer components {
+    .input-select {
+        @apply outline-none box-border p-4 border-2 border-neutral-400 bg-transparent rounded-lg text-2xl font-Proxima-Nova-Reg tracking-wider text-white focus:border-white;
+    }
+}

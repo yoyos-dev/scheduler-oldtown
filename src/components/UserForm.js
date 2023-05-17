@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm, useController } from "react-hook-form"
-import Select from "react-select";
+import Select from "react-tailwindcss-select";
 import Calendar from 'react-calendar'; 
 import GetTrainers from "./GetTrainers";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,11 +9,13 @@ import AvailableTimes from "./AvailableTimes";
 import ButtonGroup from "./ButtonGroup";
 import MultipleTimes from "./MultipleTimes";
 import Popup from 'reactjs-popup';
+import 'react-calendar/dist/Calendar.css';
 
 const phoneRegExp = /(\d{3})-(\d{3})-(\d{4})/
 
 const schema = yup.object({
-    name: yup.string().required("Please Input Name"),
+    firstName: yup.string().required("Please Input First Name"),
+    lastName: yup.string().required("Please Input Last Name"),
     phone: yup.string().required("Please Input A Valid Phone Number").matches(phoneRegExp, "Please Input A Valid Phone Number"),
     id: yup.string().optional(),
     trainer: yup.string().required(),
@@ -188,44 +190,46 @@ const UserForm = ({ user= {} }) => {
     return (
         <>
         <form onSubmit={handleSubmit(handleSave)}>
-            <div>
-                <p>Name*</p>
-                <input {...register("name")} placeholder="Name" />
-                <div style={{ color: "red" }}>{errors.name?.message}</div>
-            </div>
+            <div className="p-8 max-w-fit mx-auto rounded-lg bg-neutral-700">
+                <div className="grid grid-flow-row grid-cols-2 gap-x-8 gap-y-4">
+                    <p className="input-text">Name:*</p>
+                    <div></div>
+                    <input className="input-primary" {...register("firstName")} placeholder="First" />
+                    <input className="input-primary" {...register("lastName")} placeholder="Last" />
+                    <div className="input-error">{errors.firstName?.message}</div>
+                    <div className="input-error">{errors.lastName?.message}</div>
 
-            <div>
-                <p>Phone Number*</p>
-                <input value={phone.value} maxLength={12} onChange={handlePhoneChange} placeholder="###-###-####" />
-                <div style={{ color: "red" }}>{errors.phone?.message}</div>
-            </div>
+                    <p className="input-text">Phone Number:*</p>
+                    <p className="input-text">Member ID:</p>
+                    <input className="input-primary" value={phone.value} maxLength={12} onChange={handlePhoneChange} placeholder="###-###-####" />
+                    <input className="input-primary" {...register("id")} placeholder="x#######" onChange={handleIdChange} maxLength={8}/>
 
-            <div>
-                <p>Member ID (Optional)</p>
-                <input {...register("id")} placeholder="x#######" onChange={handleIdChange} maxLength={8}/>
-            </div>
+                    <div className="input-error">{errors.phone?.message}</div>
+                    <div></div>
 
-            <div>
-                <p>Trainer:</p>
+                    <p className="input-text">Trainer:*</p>
+                </div>
                 <Select
-                    value = {trainerOptions.find(({ value }) => value === select.value)}
-                    onChange = {handleSelectChange}
-                    options = {trainerOptions}
+                        classNames={{
+                            menuButton: () => "flex text-2xl font-Proxima-Nova-Reg tracking-wider text-white border border-2 border-neutral-400 rounded-lg transition-all duration-300 focus:border-white",
+                            menu: "box-border p-4 border-2 border-white bg-neutral-700 rounded-lg text-2xl font-Proxima-Nova-Reg tracking-wider absolute z-10 w-full text-whit border rounded py-1 mt-1.5",
+                        }}
+                        primaryColor={"red"}
+                        value = {trainerOptions.find(({ value }) => value === select.value)}
+                        onChange = {handleSelectChange}
+                        options = {trainerOptions}
                 />
             </div>
             
-            <br></br>
-            <hr></hr>
-            <br></br>
-            
-            <div className="calendar-container">
-                <Calendar 
-                    value={date}
-                    onChange={handleDateChange}
-                    minDate={new Date()}
-                    calendarType={"US"}
-                />
-            </div>
+            <Calendar 
+                className={" max-w-fit mx-auto rounded-lg bg-neutral-700"}
+                value={date}
+                onChange={handleDateChange}
+                minDate={new Date()}
+                calendarType={"US"}
+                minDetail={"year"}
+                maxDate={new Date(new Date().getFullYear(), 11, 31)}
+            />
 
             <div className = "text-center">
                     Selected date: {date.toDateString()}
@@ -261,7 +265,7 @@ const UserForm = ({ user= {} }) => {
                 </form>
 
                 <h3>Please confirm booking information:</h3>
-                <p> Name: {formValues.name}</p>
+                <p> Name: {formValues.firstName} {formValues.lastName}</p>
                 <p> Phone Number: {formValues.phone}</p>
                 <p> Member ID:  {formValues.id}</p>
                 <p> Booking Date: {formValues.date}</p>
@@ -276,13 +280,13 @@ const UserForm = ({ user= {} }) => {
                 }}>
                 <h2>Booking Confirmed!</h2>
 
-                <p>Thank you {formValues.name}!</p>
+                <p>Thank you {formValues.firstName}!</p>
                 <p>Your training session with {formValues.trainerLabel} has been confirmed</p>
                 <p>for {formValues.date} at {formValues.time}.</p>
 
                 <h3>Booking Receipt:</h3>
 
-                <p> Name: {formValues.name}</p>
+                <p> Name: {formValues.firstName} {formValues.lastName}</p>
                 <p> Phone Number: {formValues.phone}</p>
                 <p> Member ID:  {formValues.id}</p>
                 <p> Booking Date: {formValues.date} at {formValues.time}</p>
