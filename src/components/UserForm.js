@@ -9,7 +9,7 @@ import AvailableTimes from "./AvailableTimes";
 import ButtonGroup from "./ButtonGroup";
 import MultipleTimes from "./MultipleTimes";
 import Popup from 'reactjs-popup';
-import 'react-calendar/dist/Calendar.css';
+// import 'react-calendar/dist/Calendar.css';
 
 const phoneRegExp = /(\d{3})-(\d{3})-(\d{4})/
 
@@ -172,7 +172,7 @@ const UserForm = ({ user= {} }) => {
             if(json.status === 'approved'){
                 setPopUp(false)
                 setReceipt(true)
-            const message = { to: formValues.trainer, body: formValues.name + " wants to do a training session with you at " + formValues.time + " on " + formValues.date + ".\nPhone Number: " + formValues.phone + "\nMember ID: " + formValues.id }
+            const message = { to: formValues.trainer, body: formValues.firstName + " " + formValues.lastName +" wants to do a training session with you at " + formValues.time + " on " + formValues.date + ".\nPhone Number: " + formValues.phone + "\nMember ID: " + formValues.id }
             fetch('/api/messages', {
               method: 'POST',
               headers: {
@@ -190,60 +190,71 @@ const UserForm = ({ user= {} }) => {
     return (
         <>
         <form onSubmit={handleSubmit(handleSave)}>
-            <div className="p-8 max-w-fit mx-auto rounded-lg bg-neutral-700">
-                <div className="grid grid-flow-row grid-cols-2 gap-x-8 gap-y-4">
-                    <p className="input-text">Name:*</p>
-                    <div></div>
-                    <input className="input-primary" {...register("firstName")} placeholder="First" />
-                    <input className="input-primary" {...register("lastName")} placeholder="Last" />
-                    <div className="input-error">{errors.firstName?.message}</div>
-                    <div className="input-error">{errors.lastName?.message}</div>
-
-                    <p className="input-text">Phone Number:*</p>
-                    <p className="input-text">Member ID:</p>
-                    <input className="input-primary" value={phone.value} maxLength={12} onChange={handlePhoneChange} placeholder="###-###-####" />
-                    <input className="input-primary" {...register("id")} placeholder="x#######" onChange={handleIdChange} maxLength={8}/>
-
-                    <div className="input-error">{errors.phone?.message}</div>
-                    <div></div>
-
-                    <p className="input-text">Trainer:*</p>
+            <div className="grid gap-y-8 p-8 max-w-screen-md mx-auto rounded-lg bg-neutral-800">
+                <div>
+                    <span className="input-text">Name:</span><span className="input-text text-red-700">*</span>
+                    <div className="grid grid-flow-row grid-cols-2 gap-x-8 gap-y-4">
+                        <input className="input-primary" {...register("firstName")} placeholder="First" />
+                        <input className="input-primary" {...register("lastName")} placeholder="Last" />
+                    </div>
+                    <div className="grid grid-flow-row grid-cols-2 gap-x-8 gap-y-4">
+                        <div className="input-error">{errors.firstName?.message}</div>
+                        <div className="input-error">{errors.lastName?.message}</div>
+                    </div>
                 </div>
-                <Select
+            
+                <div>
+                    <div className="grid grid-flow-row grid-cols-2 gap-x-8 gap-y-4">
+                        <div>
+                            <span className="input-text">Phone Number:</span><span className="input-text text-red-700">*</span>
+                        </div>
+                        <p className="input-text">Member ID:</p>
+                    </div>
+
+                    <div className="grid grid-flow-row grid-cols-2 gap-x-8 gap-y-4">
+                        <input className="input-primary" value={phone.value} maxLength={12} onChange={handlePhoneChange} placeholder="###-###-####" />
+                        <input className="input-primary" {...register("id")} placeholder="x#######" onChange={handleIdChange} maxLength={8}/>
+                    </div>
+                    <div className="input-error">{errors.phone?.message}</div>
+                </div>
+
+                <div>
+                    <span className="input-text">Trainer:</span><span className="input-text text-red-700">*</span>
+                    <Select
                         classNames={{
                             menuButton: () => "flex text-2xl font-Proxima-Nova-Reg tracking-wider text-white border border-2 border-neutral-400 rounded-lg transition-all duration-300 focus:border-white",
-                            menu: "box-border p-4 border-2 border-white bg-neutral-700 rounded-lg text-2xl font-Proxima-Nova-Reg tracking-wider absolute z-10 w-full text-whit border rounded py-1 mt-1.5",
+                            menu: "box-border p-4 border-2 border-white bg-neutral-800 rounded-lg text-2xl font-Proxima-Nova-Reg tracking-wider absolute z-10 w-full text-whit border rounded py-1 mt-1.5",
                         }}
                         primaryColor={"red"}
                         value = {trainerOptions.find(({ value }) => value === select.value)}
                         onChange = {handleSelectChange}
                         options = {trainerOptions}
-                />
+                    />
+                </div>
             </div>
             
             <Calendar 
-                className={" max-w-fit mx-auto rounded-lg bg-neutral-700"}
+                // className={"max-w-fit mx-auto rounded-lg bg-neutral-700"}
                 value={date}
                 onChange={handleDateChange}
                 minDate={new Date()}
                 calendarType={"US"}
                 minDetail={"year"}
                 maxDate={new Date(new Date().getFullYear(), 11, 31)}
+                next2Label={null}
+                prev2Label={null}
             />
 
-            <div className = "text-center">
-                    Selected date: {date.toDateString()}
-            </div>
-
-            <div>
+            <div className="p-8 max-w-screen-md mx-auto rounded-lg bg-neutral-800 text-center">
+                <div className="input-text">Selected date: {date.toDateString()}</div>
                 <ButtonGroup
                     buttons={times}
                     onClick={handleTimeChange}
                 />
-                <div style={{ color: "red" }}>{errors.time?.message}</div>
+                <div className="input-error">{errors.time?.message}</div>
             </div>
-
-            <div>
+            
+            <div className="p-8 mx-auto rounded-lg text-center">
                 <button type="submit">Save</button>
             </div>
         </form>

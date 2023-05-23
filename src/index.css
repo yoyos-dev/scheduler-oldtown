@@ -31,12 +31,30 @@
 
 @layer components {
     .input-error {
-        @apply text-2xl font-Proxima-Nova-Reg tracking-wider text-red-500;
+        @apply text-lg font-Proxima-Nova-Reg tracking-wider text-red-500;
     }
 }
 
 @layer components {
     .input-select {
         @apply outline-none box-border p-4 border-2 border-neutral-400 bg-transparent rounded-lg text-2xl font-Proxima-Nova-Reg tracking-wider text-white focus:border-white;
+    }
+}
+
+@layer components {
+    .react-calendar{
+        @apply p-8 max-w-screen-md mx-auto rounded-lg bg-neutral-800;
+    }
+}
+
+@layer components {
+    .react-calendar button {
+        @apply outline-none box-border p-4 border-2 border-neutral-400 bg-transparent rounded-lg text-2xl font-Proxima-Nova-Reg tracking-wider text-white focus:border-white placeholder:font-Proxima-Nova-Reg-It;
+    }
+}
+
+@layer components {
+    button {
+        @apply outline-none box-border p-4 border-2 border-neutral-400 bg-transparent rounded-lg text-2xl font-Proxima-Nova-Reg tracking-wider text-white focus:border-white placeholder:font-Proxima-Nova-Reg-It;
     }
 }
