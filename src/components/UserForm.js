@@ -10,6 +10,7 @@ import ButtonGroup from "./ButtonGroup";
 import MultipleTimes from "./MultipleTimes";
 import Popup from 'reactjs-popup';
 // import 'react-calendar/dist/Calendar.css';
+import '../calendar.css'
 
 const phoneRegExp = /(\d{3})-(\d{3})-(\d{4})/
 
@@ -68,6 +69,16 @@ const UserForm = ({ user= {} }) => {
         selectLabel.onChange(option.label)
         selectTime.onChange("")
     };
+
+    const disabledDate = (args) => {
+        // var timeSet = AvailableTimes(String((args.date.getMonth() + 1)+ "-" + args.date.getDate() + "-" + args.date.getFullYear()), selectLabel.value)
+        // var times = timeSet[0]
+        if (times === []) {
+            console.log(args.date)
+            // set 'true' to disable the weekends
+            return args.date
+        }
+    }
 
     const handleDateChange = (dateChange) => {
         setDate(dateChange)
@@ -190,7 +201,7 @@ const UserForm = ({ user= {} }) => {
     return (
         <>
         <form onSubmit={handleSubmit(handleSave)}>
-            <div className="grid gap-y-8 p-8 max-w-screen-md mx-auto rounded-lg bg-neutral-800">
+            <div className="grid gap-y-8 p-8 max-w-screen-md mx-auto rounded-t-lg bg-neutral-800">
                 <div>
                     <span className="input-text">Name:</span><span className="input-text text-red-700">*</span>
                     <div className="grid grid-flow-row grid-cols-2 gap-x-8 gap-y-4">
@@ -236,6 +247,7 @@ const UserForm = ({ user= {} }) => {
             <Calendar 
                 // className={"max-w-fit mx-auto rounded-lg bg-neutral-700"}
                 value={date}
+                tileDisabled={disabledDate}
                 onChange={handleDateChange}
                 minDate={new Date()}
                 calendarType={"US"}
@@ -245,16 +257,17 @@ const UserForm = ({ user= {} }) => {
                 prev2Label={null}
             />
 
-            <div className="p-8 max-w-screen-md mx-auto rounded-lg bg-neutral-800 text-center">
-                <div className="input-text">Selected date: {date.toDateString()}</div>
+            <div className="p-8 max-w-screen-md mx-auto rounded-b-lg bg-neutral-800 text-center">
                 <ButtonGroup
                     buttons={times}
                     onClick={handleTimeChange}
                 />
                 <div className="input-error">{errors.time?.message}</div>
             </div>
+
+            <div className="input-text max-w-screen-md mx-auto my-2 text-center">Date Selected: {date.toDateString()} at {selectTime.value}</div>
             
-            <div className="p-8 mx-auto rounded-lg text-center">
+            <div className="mx-auto rounded-lg text-center">
                 <button type="submit">Save</button>
             </div>
         </form>

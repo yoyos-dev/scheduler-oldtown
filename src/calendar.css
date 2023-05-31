@@ -1,0 +1,39 @@
+.react-calendar{
+    @apply max-w-screen-md mx-auto;
+}
+
+.react-calendar__navigation {
+    @apply mx-auto my-4 px-8 py-4 bg-neutral-800 flex justify-center
+  }
+
+/* .react-calendar__tile {
+    @apply m-2 max-w-xs
+ } */
+
+.react-calendar__navigation button {
+    @apply bg-transparent outline-none box-border p-4 border-2 border-neutral-400 text-white font-Proxima-Nova-Reg tracking-wider text-2xl rounded-lg disabled:opacity-25
+}
+
+.react-calendar__month-view {
+    @apply my-4 py-4 bg-neutral-800 border-2 border-blue-500
+}
+
+.react-calendar button {
+    @apply outline-none p-4 border-2 border-red-600 bg-red-950 rounded-lg text-2xl font-Proxima-Nova-Reg tracking-wider text-red-600 focus:border-white focus:text-white focus:bg-neutral-700 placeholder:font-Proxima-Nova-Reg-It disabled:opacity-25 disabled:border-neutral-400 disabled:text-white disabled:bg-transparent;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+    @apply font-Proxima-Nova-Reg text-center bg-gradient-to-b from-white to-neutral-500 rounded-md text-xl
+  }
+
+/* .react-calendar__tile {
+    @apply border-2 border-blue-600 text-white font-Proxima-Nova-Reg tracking-wider text-2xl max-w-md
+} */
+
+/* .react-calendar__month-view__days__day {
+    @apply border-2 border-blue-500
+} */
+
+/* .react-calendar__month-view__weekdays {
+    @apply font-Proxima-Nova-Reg text-white text-center
+} */
